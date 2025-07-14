@@ -11,7 +11,7 @@ import config
 MIN_INTERVAL = 1.0
 
 def fetch(url: str) -> requests.Response:
-    """Fetch a URL with randomized delay and rotating headers."""
+    """隨機delay fetch url"""
     time.sleep(random.uniform(0.5, 1.5) * MIN_INTERVAL)
     headers = random.choice(config.headers_list)
     resp = requests.get(url, headers=headers)
@@ -19,7 +19,7 @@ def fetch(url: str) -> requests.Response:
     return resp
 
 def parse_event(block) -> dict[str, int] | None:
-    """Parse a single event block, returning {'name', 'price'} or None."""
+    """從div block中取出資料, return {name, price} | None"""
     # 取 <h3> 裡的賽事名稱
     h3 = block.find('h3', class_='sc-abd1d3fa-5 kxfKRH')
     if not h3:
@@ -38,7 +38,7 @@ def parse_event(block) -> dict[str, int] | None:
     return {'name': name, 'price': int(digits)}
 
 def scrape_events() -> list[dict[str, int]]:
-    """Scrape all events across configured tabs, filtering duplicates."""
+    """抓取所有 tabs 的 html 特定 block"""
     seen: set[str] = set()
     results: list[dict[str, int]] = []
     base_url = 'https://asiayo.com/zh-tw/package/sport-activities/'
